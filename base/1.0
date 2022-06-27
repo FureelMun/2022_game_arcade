@@ -1,0 +1,24 @@
+import pygame
+from pygame import *
+from Sprites import choose_place
+
+pygame.init()
+pygame.display.set_caption('Game_Liza')
+
+clock = time.Clock()
+FPS = 60
+
+game = True
+
+while game:
+    pressed_keys = key.get_pressed()
+    for e in event.get():
+        if e.type == QUIT:
+            game = False
+        elif e.type == MOUSEBUTTONDOWN:
+            button_status = e.button
+
+    choose_place()
+
+    display.update()
+    clock.tick(FPS)
