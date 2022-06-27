@@ -1,0 +1,80 @@
+from pygame import *
+from time import sleep
+
+
+class GameSprite(sprite.Sprite):
+    def __init__(self, player_x, player_y, player_image,
+                 player_speed, player_size_x, player_size_y):
+        super().__init__()
+        self.image = transform.scale(image.load(player_image), (player_size_x, player_size_y))
+        self.speed = player_speed
+        self.rect = self.image.get_rect()
+        self.rect.x = player_x
+        self.rect.y = player_y
+
+    def reset(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
+
+
+class Buttons(GameSprite):
+    def update(self):
+        self.reset()
+
+
+b_lobe_loc = [275, 190]
+b_back_loc = [15, 440]
+b_lobe_im = "play_button.png"
+b_back_im = "back.png"
+b_speed = 0
+b_size = [150, 150]
+b_b_size = [40, 50]
+button_lobe = Buttons(b_lobe_loc[0], b_lobe_loc[1], b_lobe_im,
+                            b_speed, b_size[0], b_size[1])
+button_back = GameSprite(b_back_loc[0], b_back_loc[1], b_back_im,
+                            b_speed, b_b_size[0], b_b_size[1])
+lobe_s = sprite.Group(button_lobe)
+choose_room_s = sprite.Group()
+
+mouse_image = "mouse.png"
+
+background_now = ["start_lobe.jpg", "choose_game.jpg"]
+wind_size = [700, 500]
+window = display.set_mode((wind_size[0], wind_size[1]))
+flag_place = 0
+
+background = transform.scale(image.load(background_now[0]), (wind_size[0], wind_size[1]))
+
+
+def touching(self): # касается ли спрайт мышки?(проверка)
+    pressed = mouse.get_pressed() #есть нажатие?
+    mouse_pos = mouse.get_pos()# где нажали
+    mouse_sensor = GameSprite(mouse_pos[0], mouse_pos[1], mouse_image, 0, 1, 1)
+    if pressed[0] and sprite.collide_rect(self, mouse_sensor):
+        sleep(0.5) # чтобы обрабатовать одно нажатие, а не удержание
+        #print("k")
+        return True
+
+
+def choose_place():
+    global flag_place, background_now, background
+    window.blit(background, (0, 0))
+    if touching(button_lobe):
+        flag_place = 1
+    if flag_place == 0:
+        lobe_s.update()
+    else:
+        if flag_place == 1:
+            choose_room_s.update()
+        if touching(button_back):
+            flag_place -= 1
+        button_back.reset()
+    background = transform.scale(image.load(background_now[flag_place]), (wind_size[0], wind_size[1]))
+
+
+
+
+'''
+0-лобби
+1-комната выбора
+2- "Пучина"
+'''
